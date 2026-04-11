@@ -10,19 +10,19 @@ const outfit = Outfit({
 });
 
 export const metadata = {
-  title: "LuxeCommerce | Premium Shopping Experience",
-  description: "Experience the next level of online shopping with our curated collections and seamless interface.",
-  keywords: "ecommerce, premium, fashion, luxury, nextjs, react",
+  title: "SaffronStitch | Premium Ethnic Wear & Modern Luxury",
+  description: "Discover a curated collection of premium ethnic wear and modern luxury pieces at SaffronStitch. Timeless craftsmanship meet modern elegance.",
+  keywords: "saffronstitch, ethnic wear, luxury fashion, premium clothing, nextjs, ecommerce",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={outfit.className}>
+      <body className={`${outfit.className} bg-background text-foreground antialiased`}>
         <Navbar />
-        <main>
+        <div className="pt-20">
           {children}
-        </main>
+        </div>
         <Footer />
       </body>
     </html>
