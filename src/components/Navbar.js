@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart, User, Search, Menu, X } from "lucide-react";
+import { ShoppingCart, User, Search, Menu, X, Moon, Sun } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import SearchModal from "./SearchModal";
@@ -10,6 +10,26 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [theme, setTheme] = useState("dark");
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") || "dark";
+    setTheme(savedTheme);
+    if (savedTheme === "light") {
+      document.documentElement.classList.add("light");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = theme === "dark" ? "light" : "dark";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+    if (newTheme === "light") {
+      document.documentElement.classList.add("light");
+    } else {
+      document.documentElement.classList.remove("light");
+    }
+  };
 
 
   useEffect(() => {
@@ -23,11 +43,11 @@ export default function Navbar() {
   return (
     <nav
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 py-4",
-        isScrolled ? "glass py-3" : "bg-transparent"
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 py-4 px-0",
+        isScrolled ? "glass py-3 !rounded-none border-x-0" : "bg-transparent"
       )}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
+      <div className="w-full px-6 lg:px-12 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="text-2xl font-bold tracking-tighter flex items-center">
           SAFFRON<span className="gradient-text">STITCH</span>
@@ -53,6 +73,13 @@ export default function Navbar() {
         <div className="flex items-center gap-5">
           <button 
             className="hidden sm:flex hover:text-primary transition-colors"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+          >
+            {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+          <button 
+            className="hidden sm:flex hover:text-primary transition-colors"
             onClick={() => setIsSearchOpen(true)}
           >
             <Search size={20} />
@@ -66,6 +93,13 @@ export default function Navbar() {
               0
             </span>
           </Link>
+          <button
+            className="md:hidden hover:text-primary transition-colors"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+          >
+             {theme === "dark" ? <Sun size={24} /> : <Moon size={24} />}
+          </button>
           <button
             className="md:hidden hover:text-primary transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}

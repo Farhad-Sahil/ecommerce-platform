@@ -1,8 +1,9 @@
 "use client";
 
-import { X, Search, ArrowRight, TrendingUp } from "lucide-react";
+import { X, Search, Heart } from "lucide-react";
 import { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
+import Image from "next/image";
+import { featuredProducts } from "@/lib/data";
 
 export default function SearchModal({ isOpen, onClose }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -20,91 +21,95 @@ export default function SearchModal({ isOpen, onClose }) {
 
   if (!isOpen) return null;
 
-  const suggestions = [
-    "Saffron Silk Saree",
-    "Bridal Lehenga 2026",
-    "Velvet Evening Shawl",
-    "Gold Zari Embroidery",
-  ];
+  const tags = ["New Arrivals", "Bridal", "Casual", "Silk", "Luxury", "Hand-Stitched"];
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[10vh] px-6">
-      <div 
-        className="absolute inset-0 bg-background/60 backdrop-blur-xl animate-fade-in" 
-        onClick={onClose}
-      ></div>
-      
-      <div className="relative w-full max-w-2xl animate-slide-up">
-        <div className="glass rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden">
-          {/* Search Input */}
-          <div className="p-6 border-b border-white/5 flex items-center gap-4">
-            <Search className="text-primary" size={24} />
+    <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center p-6 sm:p-20 overflow-hidden">
+      {/* Background with Texture and Blur */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/search_texture.png"
+          alt="Background Texture"
+          fill
+          className="object-cover opacity-80"
+        />
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-2xl" />
+      </div>
+
+      {/* Main Search Container - Grouped */}
+      <div className="relative z-10 w-full max-w-2xl bg-card border border-border shadow-2xl rounded-[4px] flex flex-col animate-scale-in max-h-[85vh] overflow-hidden">
+        {/* Close Icon - Now inside the block at top right */}
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 z-20 p-2 hover:bg-muted rounded-full transition-all text-muted-foreground hover:text-foreground active:scale-95"
+          aria-label="Close search"
+        >
+          <X size={20} />
+        </button>
+
+        <div className="p-6 pb-2">
+          {/* Search Input Section */}
+          <div className="relative flex items-center mb-4">
             <input
               autoFocus
               type="text"
-              placeholder="Search SaffronStitch..."
-              className="flex-1 bg-transparent border-none outline-none text-xl font-medium placeholder:text-muted-foreground"
+              placeholder="Search for ethnic elegance..."
+              className="w-full bg-muted/30 border border-border rounded-[4px] px-6 py-3.5 text-lg font-light placeholder:text-muted-foreground outline-none focus:border-primary/40 transition-all pr-12"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button 
-              onClick={onClose}
-              className="p-2 hover:bg-white/5 rounded-full transition-colors text-muted-foreground hover:text-foreground"
-            >
-              <X size={24} />
-            </button>
+            <Search 
+              className="absolute right-5 text-muted-foreground pointer-events-none" 
+              size={20} 
+            />
           </div>
 
-          {/* Search Content */}
-          <div className="p-8 space-y-8 max-h-[60vh] overflow-y-auto">
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
-                <TrendingUp size={14} /> Trending Searches
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {suggestions.map((s, i) => (
-                  <button 
-                    key={i} 
-                    className="px-4 py-2 glass rounded-xl text-sm hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-                    onClick={() => setSearchTerm(s)}
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
+          <div className="text-[8px] font-bold uppercase tracking-[0.4em] text-muted-foreground mb-3">
+            Recent Collections
+          </div>
+        </div>
 
-            <div className="space-y-4">
-               <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
-                  Quick Links
-               </div>
-               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {[
-                    { label: "New Arrivals", href: "/shop" },
-                    { label: "Bridal Couture", href: "/collections" },
-                    { label: "Shipping Policy", href: "/shipping" },
-                    { label: "Contact Us", href: "/contact" },
-                  ].map((link, i) => (
-                    <button 
-                      key={i} 
-                      className="flex items-center justify-between p-4 glass rounded-2xl border border-white/5 hover:border-primary/20 hover:bg-white/5 transition-all text-sm group"
-                    >
-                      {link.label}
-                      <ArrowRight size={14} className="opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-                    </button>
-                  ))}
-               </div>
-            </div>
+        {/* Scrollable Results Area */}
+        <div className="flex-1 overflow-y-auto px-6 pb-6 no-scrollbar space-y-6">
+          <div className="grid grid-cols-2 gap-3">
+            {featuredProducts.slice(0, 4).map((product) => (
+              <div 
+                key={product.id} 
+                className="flex items-center gap-3 p-2 rounded-[4px] bg-muted/20 border border-border group hover:bg-muted/40 transition-all cursor-pointer"
+              >
+                <div className="relative w-14 h-14 rounded-[4px] overflow-hidden shrink-0">
+                  <Image
+                    src={product.image}
+                    alt={product.name}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                </div>
+                <div className="flex flex-col justify-center min-w-0">
+                  <span className="text-[7px] uppercase tracking-widest text-primary font-bold truncate">{product.category}</span>
+                  <h3 className="text-[11px] font-bold text-foreground leading-tight mt-0.5 truncate">{product.name}</h3>
+                  <span className="text-[9px] font-bold text-muted-foreground mt-0.5">${product.price.replace('$', '')}</span>
+                </div>
+              </div>
+            ))}
           </div>
 
-          {/* Footer Tips */}
-          <div className="px-8 py-4 bg-primary/5 border-t border-white/5 flex justify-between items-center">
-             <p className="text-[10px] text-muted-foreground italic">
-                Tip: Press <span className="p-1 glass rounded font-mono">ESC</span> to close
-             </p>
-             <button className="text-[10px] font-bold text-primary uppercase tracking-widest hover:underline">
-                View All Results
-             </button>
+          {/* Quick Search Tags - moved closer to products */}
+          <div className="space-y-2 pt-4 border-t border-border/50">
+            <div className="text-[8px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
+              Popular Tags
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {tags.map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => setSearchTerm(tag)}
+                  className="px-2.5 py-1 rounded-[4px] bg-muted/50 hover:bg-primary/20 border border-border text-[9px] font-bold uppercase tracking-widest text-muted-foreground hover:text-primary transition-all"
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
